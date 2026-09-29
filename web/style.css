@@ -138,6 +138,7 @@ table.measured th { font-weight: 500; color: var(--graphite); font-size: 13px; }
 .chip.better { background: #e3f1e8; color: var(--good); }
 .chip.worse { background: #f7e2df; color: var(--bad); }
 .chip.noise { background: var(--stone); color: var(--graphite); }
+.chip.uncertain { background: #fff1d6; color: #7a4b00; }
 .chip.retake { background: #fff1d6; color: #7a4b00; }
 .bandbar { position: relative; height: 6px; background: var(--stone); border-radius: 9999px; margin-top: 8px; }
 .bandbar .band { position: absolute; top: 0; bottom: 0; background: #d9d4cd; border-radius: 9999px; }

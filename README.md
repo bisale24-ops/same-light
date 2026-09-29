@@ -56,6 +56,15 @@ Total fake change: **40 → 13 points**. Wrinkle and texture drift went to zero.
 the noise band per concern (`samelight.NOISE_BAND`: wrinkle ±2, pore ±3, texture ±2, acne ±4): a
 change inside the band is reported as noise, never as a result.
 
+**4. How far matching can be trusted.** A live before/after pair with a large light gap (29%
+brighter and 0.14 warmer — "before" pushed cool, "after" pushed warm) still left pores +6 after
+matching: twice the band, on skin that had not changed. So the residual was measured across
+larger single-sided gaps too — 3 faces × 4 lights up to 26% exposure and 0.07 warmth
+([experiments/calibrate.json](experiments/calibrate.json)): it never exceeded the band. Same Light
+therefore certifies a change only inside that measured range (`CALIBRATED_EXPOSURE = 0.27`,
+`CALIBRATED_WARMTH = 0.08`). Beyond it, the change is shown with how much the light explains, and
+marked **can't certify** — it does not guess. Beyond 35% / 0.25 it asks for a retake.
+
 ## How the YouCam API is used
 
 - **AI Skin Analysis V2.1** (`/s2s/v2.1/file/skin-analysis` → upload to the signed URL →
@@ -80,7 +89,7 @@ floor; the sample face and sample pair are real recorded results
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 echo "YOUR_YOUCAM_API_KEY" > ~/.config/youcam.key     # or export YOUCAM_API_KEY
 .venv/bin/python server.py                               # http://localhost:8790
-.venv/bin/python -m pytest -q                            # 17 tests, no network, no units
+.venv/bin/python -m pytest -q                            # 20 tests, no network, no units
 ```
 
 Re-run the measurements (they spend units): `experiments/noise.py`, `experiments/lighting.py`,

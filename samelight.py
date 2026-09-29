@@ -20,6 +20,13 @@ NOISE_BAND = {"wrinkle": 2, "pore": 3, "texture": 2, "acne": 4}
 MAX_EXPOSURE_DRIFT = 0.35
 MAX_WARMTH_DRIFT = 0.25
 
+# The largest light gaps the bands were measured on (experiments/calibrate.json: 3 faces, 12
+# lights, residual after matching never above the band). Past this, matching still runs, but a
+# change is never certified as real: a live pair with a 0.14 warmth gap left pores +6 after
+# matching, twice the band, on skin that had not changed.
+CALIBRATED_EXPOSURE = 0.27
+CALIBRATED_WARMTH = 0.08
+
 LABELS = {"wrinkle": "Wrinkles", "pore": "Pores", "texture": "Texture", "acne": "Blemishes"}
 
 
@@ -66,6 +73,11 @@ def comparable(light):
     return abs(light["exposure"]) <= MAX_EXPOSURE_DRIFT and abs(light["warmth"]) <= MAX_WARMTH_DRIFT
 
 
+def calibrated(light):
+    """Inside the light gaps the noise bands were actually measured on."""
+    return abs(light["exposure"]) <= CALIBRATED_EXPOSURE and abs(light["warmth"]) <= CALIBRATED_WARMTH
+
+
 def match_light(image, reference_fp):
     """Map each channel of the whole photo so the face region has the baseline's mean and spread."""
     image = image.convert("RGB")
@@ -88,6 +100,7 @@ def verdict(baseline_scores, current_scores, light=None):
         return [{"concern": c, "label": LABELS[c], "before": baseline_scores.get(c),
                  "after": current_scores.get(c), "delta": None, "band": NOISE_BAND[c],
                  "call": "retake"} for c in CONCERNS]
+    certain = light is None or calibrated(light)
     rows = []
     for concern in CONCERNS:
         before, after = baseline_scores.get(concern), current_scores.get(concern)
@@ -96,6 +109,8 @@ def verdict(baseline_scores, current_scores, light=None):
         delta = after - before
         band = NOISE_BAND[concern]
         call = "better" if delta > band else "worse" if delta < -band else "noise"
+        if call != "noise" and not certain:
+            call = "uncertain"
         rows.append({"concern": concern, "label": LABELS[concern], "before": before, "after": after,
                      "delta": delta, "band": band, "call": call})
     return rows

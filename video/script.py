@@ -34,13 +34,14 @@ SCENES = [
     ("clip:checkin",
      "A week later, in a cooler room. Same Light measures how the light moved, matches it to the "
      "baseline, and only then scans. Every concern is judged against its measured noise band. "
-     "Here: nothing changed beyond noise. Scanned as shot, the same photo reads pores down seven "
-     "and texture down four, for skin that did not change."),
+     "Here: nothing changed beyond noise. Scanned as shot, without matching, the same photo reads "
+     "pores down eight and texture down four, for skin that did not change."),
 
     ("clip:pair",
      "Check a before and after, like a product ad: dim and cool before, bright and warm after. "
-     "As shown, pores improve by fourteen points. Rescanned in the before photo's light, three, "
-     "inside the noise. Most of that improvement was the lighting."),
+     "As shown, pores improve by twelve and texture by four. In the before photo's light, "
+     "texture's gain is gone. Pores keep six, but this light gap is bigger than anything I "
+     "calibrated, so Same Light says it can't certify it, instead of guessing."),
 
     ("clip:proof",
      "When a routine does work, you get a proof card that only counts changes beyond the noise. "
@@ -82,7 +83,7 @@ CARDS = {
 CLIPS = {
     "home": "clips/home.webm",
     "baseline": "clips/baseline.webm",
-    "checkin": "clips/checkin.webm",
+    "checkin": ("clips/checkin.webm", 3),
     "pair": "clips/pair.webm",
     "proof": "clips/proof.webm",
 }

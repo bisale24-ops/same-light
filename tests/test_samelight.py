@@ -78,3 +78,16 @@ def test_light_explains_share():
     assert sl.light_explains(-6, -4) == 0.33
     assert sl.light_explains(0, 0) == 0.0
     assert sl.light_explains(4, 4) == 0.0
+
+
+def test_beyond_the_calibrated_light_gap_nothing_is_certified():
+    light = {"exposure": 0.29, "warmth": 0.14}          # the live pair that left pores +6
+    assert sl.comparable(light) and not sl.calibrated(light)
+    rows = sl.verdict({"pore": 80, "wrinkle": 80}, {"pore": 86, "wrinkle": 81}, light)
+    calls = {r["concern"]: r["call"] for r in rows}
+    assert calls == {"pore": "uncertain", "wrinkle": "noise"}
+
+
+def test_inside_the_calibrated_gap_a_change_is_certified():
+    rows = sl.verdict({"pore": 80}, {"pore": 86}, {"exposure": 0.2, "warmth": 0.06})
+    assert rows[0]["call"] == "better"

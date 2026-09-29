@@ -161,6 +161,7 @@ def handle_pair(body, address):
     before, after = decode(body.get("before") or ""), decode(body.get("after") or "")
     before_fp, after_fp = sl.fingerprint(before), sl.fingerprint(after)
     light = sl.drift(before_fp, after_fp)
+    certain = sl.calibrated(light)
     spend(address, 3)
     with ThreadPoolExecutor(max_workers=3) as pool:     # three independent tasks: run together
         jobs = [pool.submit(scan, image, False)
@@ -173,8 +174,9 @@ def handle_pair(body, address):
         rows.append({"concern": concern, "label": sl.LABELS[concern], "claimed": claimed,
                      "same_light": real, "band": sl.NOISE_BAND[concern],
                      "light_share": sl.light_explains(claimed, real),
-                     "real": abs(real) > sl.NOISE_BAND[concern]})
-    return {"light": light, "light_words": sl.describe(light).replace("your baseline",
+                     "real": certain and abs(real) > sl.NOISE_BAND[concern],
+                     "uncertain": not certain and abs(real) > sl.NOISE_BAND[concern]})
+    return {"light": light, "calibrated": certain, "light_words": sl.describe(light).replace("your baseline",
                                                                        "the before photo"),
             "rows": rows, "before": first, "after": raw, "after_same_light": matched}
 

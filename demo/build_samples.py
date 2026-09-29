@@ -55,8 +55,9 @@ def main():
              "raw_verdict": sl.verdict(baseline["scores"], raw["scores"])}
 
     # Pair: the classic ad — "before" dim and cool, "after" bright and warm. Same skin.
-    before = tint(ImageEnhance.Brightness(face).enhance(0.88), 0.93, 1.07)
-    after = tint(ImageEnhance.Brightness(face).enhance(1.1), 1.07, 0.92)
+    # Kept inside the calibrated light gap (samelight.CALIBRATED_*), where a verdict is certified.
+    before = tint(ImageEnhance.Brightness(face).enhance(0.92), 0.97, 1.03)
+    after = tint(ImageEnhance.Brightness(face).enhance(1.12), 1.04, 0.97)
     before_fp = sl.fingerprint(before)
     first = server.scan(before, with_overlays=False)
     as_shown = server.scan(after, with_overlays=False)
@@ -68,10 +69,11 @@ def main():
         rows.append({"concern": concern, "label": sl.LABELS[concern], "claimed": claimed,
                      "same_light": real, "band": sl.NOISE_BAND[concern],
                      "light_share": sl.light_explains(claimed, real),
-                     "real": abs(real) > sl.NOISE_BAND[concern]})
+                     "real": abs(real) > sl.NOISE_BAND[concern], "uncertain": False})
     pair_light = sl.drift(before_fp, sl.fingerprint(after))
+    assert sl.calibrated(pair_light), pair_light
     pair = {"before_photo": data_url(before), "after_photo": data_url(after),
-            "result": {"light": pair_light,
+            "result": {"light": pair_light, "calibrated": True,
                        "light_words": sl.describe(pair_light).replace("your baseline",
                                                                       "the before photo"),
                        "rows": rows, "before": first, "after": as_shown,

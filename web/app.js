@@ -6,6 +6,7 @@ const CALLS = {
   worse: "Real decline",
   noise: "Within noise",
   retake: "Retake — light too different",
+  uncertain: "Can't certify — bigger light gap than measured",
 };
 const $ = (sel, root = document) => root.querySelector(sel);
 const el = (tag, attrs = {}, ...kids) => {
@@ -320,8 +321,8 @@ function proofCard() {
     g.fillStyle = "#000"; g.font = "500 40px Inter, sans-serif"; g.fillText(row.label, 140, y + 12);
     g.font = "400 34px JetBrains Mono, monospace"; g.fillStyle = "#44403b";
     g.fillText(`${row.before} → ${row.after}`, 470, y + 12);
-    const colors = { better: ["#e3f1e8", "#1f7a4d"], worse: ["#f7e2df", "#b3261e"], noise: ["#ebe8e4", "#44403b"], retake: ["#fff1d6", "#7a4b00"] }[row.call];
-    const label = { better: "real", worse: "real decline", noise: "noise", retake: "retake" }[row.call];
+    const colors = { better: ["#e3f1e8", "#1f7a4d"], worse: ["#f7e2df", "#b3261e"], noise: ["#ebe8e4", "#44403b"], retake: ["#fff1d6", "#7a4b00"], uncertain: ["#fff1d6", "#7a4b00"] }[row.call];
+    const label = { better: "real", worse: "real decline", noise: "noise", retake: "retake", uncertain: "not certified" }[row.call];
     g.font = "500 32px Inter, sans-serif";
     const w = g.measureText(label).width + 48;
     g.fillStyle = colors[0]; roundRect(g, 940 - w, y - 26, w, 56, 28); g.fill();
@@ -450,7 +451,10 @@ $("#pair-sample").addEventListener("click", async () => {
 function renderPair(result, sample = false) {
   const claimed = result.rows.filter((r) => Math.abs(r.claimed) > r.band);
   const survived = result.rows.filter((r) => r.real);
-  const headline = claimed.length === 0
+  const unsure = result.rows.filter((r) => r.uncertain);
+  const headline = unsure.length
+    ? `The light in this pair differs more than Same Light has measured, so ${unsure.length === 1 ? "one change" : unsure.length + " changes"} can't be certified either way.`
+    : claimed.length === 0
     ? "The pair shows no change beyond noise, with or without the light."
     : survived.length === 0
       ? "Every change in this pair disappears when the light is matched."
@@ -462,7 +466,9 @@ function renderPair(result, sample = false) {
       el("div", {}, el("strong", { text: r.label }),
         el("div", { class: "share-bar", title: `${share}% explained by light` }, el("span", { style: `width:${share}%` }))),
       el("div", { class: "scores", text: `as shown ${fmt(r.claimed)} · same light ${fmt(r.same_light)}` }),
-      el("span", { class: "chip " + (r.real ? (r.same_light > 0 ? "better" : "worse") : "noise"), text: r.real ? "Real" : Math.abs(r.claimed) > r.band ? `${share}% light` : "No change" }));
+      r.uncertain
+        ? el("span", { class: "chip uncertain", text: "Can't certify" })
+        : el("span", { class: "chip " + (r.real ? (r.same_light > 0 ? "better" : "worse") : "noise"), text: r.real ? "Real" : Math.abs(r.claimed) > r.band ? `${share}% light` : "No change" }));
   });
   const box = $("#pair-result");
   box.hidden = false;
