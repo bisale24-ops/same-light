@@ -365,6 +365,10 @@ $("#camera-btn").addEventListener("click", async () => {
         YMK.close();
         toJpeg(src).then(showTrackPhoto);
       });
+      YMK.addEventListener("cameraFailed", () => {
+        YMK.close();
+        alertBox("#alert", "The camera could not start here. Allow camera access, or upload a photo instead.");
+      });
       window.__kitWired = true;
     }
     const width = Math.min(560, $("#capture").clientWidth);
