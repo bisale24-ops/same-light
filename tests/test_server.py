@@ -30,16 +30,19 @@ def face():
 def fake_youcam(monkeypatch):
     calls = {"uploads": 0, "analyses": 0, "forgot": 0, "balance": 1000}
 
+    images = {}
+
     def upload(data, name="x.jpg"):
         calls["uploads"] += 1
-        calls["last_image"] = Image.open(io.BytesIO(data)).convert("RGB")
-        return f"file-{calls['uploads']}"
+        file_id = f"file-{calls['uploads']}"
+        images[file_id] = Image.open(io.BytesIO(data)).convert("RGB")
+        return file_id
 
     def analyse(concerns, file_id=None, forget=False, overlay=False, **_):
         calls["analyses"] += 1
         calls["forgot"] += int(forget)
         # Score follows brightness, like the real scanner does: darker photo, "better" pores.
-        light = sl.luminance(sl.fingerprint(calls["last_image"]))
+        light = sl.luminance(sl.fingerprint(images[file_id]))
         pore = int(round(120 - light / 3))
         info = {c: {"ui_score": 80, "raw_score": 80.0} for c in concerns}
         info["pore"] = {"ui_score": pore, "raw_score": float(pore)}
@@ -133,3 +136,11 @@ def test_pair_reports_the_share_the_light_explains(face, fake_youcam):
     assert pore["real"] is False
     assert pore["light_share"] > 0.7
     assert fake_youcam["analyses"] == 3
+
+
+def test_plain_scan_shows_what_an_unmatched_app_would_claim(face, fake_youcam):
+    base = server.handle_scan({"image": data_url(face)}, "8.8.8.8")
+    darker = ImageEnhance.Brightness(face).enhance(0.8)
+    plain = server.handle_plain({"image": data_url(darker), "baseline": base}, "8.8.8.8")
+    pore = next(r for r in plain["verdict"] if r["concern"] == "pore")
+    assert pore["call"] == "better"            # the fake improvement a plain scan reports

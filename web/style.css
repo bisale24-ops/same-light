@@ -155,6 +155,10 @@ table.measured th { font-weight: 500; color: var(--graphite); font-size: 13px; }
 .share-bar { margin-top: 12px; height: 8px; border-radius: 9999px; background: var(--stone); overflow: hidden; }
 .share-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--ember), var(--violet)); }
 
+dialog.proof { border: 0; border-radius: 24px; padding: 20px; background: var(--eggshell); max-width: min(440px, 92vw); box-shadow: var(--whisper); }
+dialog.proof::backdrop { background: rgba(20, 18, 16, .45); }
+dialog.proof img { border-radius: 14px; box-shadow: var(--whisper); max-height: 72vh; width: auto; margin: 0 auto; }
+
 .footer { border-top: 1px solid var(--stone); padding: 28px 0 40px; color: var(--ash); font-size: 13px; }
 .footer a { color: var(--smoke); }
 

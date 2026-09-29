@@ -119,6 +119,7 @@ function swatch(fp) {
 
 /* ---------- track ---------- */
 let photo = null;
+let lastCheckin = null;
 const showTrackPhoto = wireDrop($("#drop"), (dataUrl, error) => {
   photo = dataUrl;
   $("#scan-btn").disabled = !dataUrl;
@@ -176,6 +177,7 @@ $("#scan-btn").addEventListener("click", async () => {
       state.checkins = [...(state.checkins || []), { ...pick(result), light: result.light, light_words: result.light_words, verdict: result.verdict, date: Date.now(), thumb: small }];
     }
     save(state);
+    lastCheckin = baseline && !result.retake ? { image: photo, baseline: { scores: baseline.scores } } : null;
     renderResult(result, !baseline);
     renderTrack();
   } catch (err) {
@@ -231,19 +233,40 @@ function renderResult(result, isBaseline, extra = {}) {
       el("div", { class: "swatches" }, swatch(base.fingerprint), el("span", { class: "caption", text: "→" }), swatch(result.fingerprint)),
       el("div", {}, el("strong", { text: "Light: " + result.light_words }), el("p", { class: "caption", style: "margin:4px 0 0", text: result.matched ? "Matched to your baseline before scanning." : "" }))));
     parts.push(verdictRows(result.verdict));
+    if (!extra.sample && lastCheckin) {
+      const holder = el("div", { style: "margin-top:16px" });
+      const button = el("button", { class: "btn small", text: "What would a plain scan say?" });
+      button.onclick = async () => {
+        button.disabled = true;
+        button.textContent = "Scanning the photo as shot…";
+        try {
+          const plain = await api("/api/plain", lastCheckin);
+          holder.replaceChildren(plainBox(plain.verdict));
+        } catch (err) {
+          holder.replaceChildren(el("p", { class: "caption", text: err.message }));
+        }
+      };
+      holder.append(button, el("span", { class: "caption", style: "margin-left:10px", text: "One extra scan of this photo without light matching." }));
+      parts.push(holder);
+    }
     if (extra.raw_verdict) {
-      const fooled = extra.raw_verdict.filter((r) => r.call !== "noise");
-      if (fooled.length) {
-        parts.push(el("div", { class: "card white", style: "margin-top:16px" },
-          el("strong", { text: "Without light matching, this check-in would have said:" }),
-          el("p", { class: "muted", style: "margin:6px 0 0", text: fooled.map((r) => `${r.label.toLowerCase()} ${CALLS[r.call].toLowerCase()} (${r.delta > 0 ? "+" : ""}${r.delta})`).join(", ") + ". The skin did not change — only the light did." })));
-      }
+      parts.push(plainBox(extra.raw_verdict));
     }
   }
   const grid = overlayGrid(result.overlays);
   if (grid) parts.push(el("p", { class: "caption", style: "margin-top:20px", text: "What the YouCam scan detected on this photo:" }), grid);
   box.replaceChildren(el("div", { class: "card", style: "margin-top:28px" }, ...parts));
   box.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function plainBox(rows) {
+  const fooled = rows.filter((r) => r.call !== "noise");
+  const said = fooled.length
+    ? fooled.map((r) => `${r.label.toLowerCase()} ${CALLS[r.call].toLowerCase()} (${r.delta > 0 ? "+" : ""}${r.delta})`).join(", ") + "."
+    : "no change either — here the light moved too little to fool it.";
+  return el("div", { class: "card white", style: "margin-top:16px" },
+    el("strong", { text: "Scanned as shot, without light matching, this check-in would have said:" }),
+    el("p", { class: "muted", style: "margin:6px 0 0", text: said + (fooled.length ? " Same Light's verdict above is what survives once the light is equal." : "") }));
 }
 
 function scoreLine(scores) {
@@ -307,8 +330,16 @@ function proofCard() {
   }
   g.fillStyle = "#6b655d"; g.font = "400 28px Inter, sans-serif";
   wrap(g, "A change counts only when it beats the measured noise band for that concern. Scored with YouCam AI Skin Analysis.", 100, 1220, 880, 38);
-  const a = el("a", { href: c.toDataURL("image/png"), download: "same-light-proof.png" });
-  document.body.append(a); a.click(); a.remove();
+  const url = c.toDataURL("image/png");
+  const dialog = el("dialog", { class: "proof" },
+    el("img", { src: url, alt: "Your Same Light proof card" }),
+    el("div", { class: "row", style: "justify-content:flex-end;margin-top:14px" },
+      el("button", { class: "btn ghost small", text: "Close" }),
+      el("a", { class: "btn primary small", href: url, download: "same-light-proof.png", text: "Download" })));
+  document.body.append(dialog);
+  $("button", dialog).onclick = () => dialog.close();
+  dialog.addEventListener("close", () => dialog.remove());
+  dialog.showModal();
 }
 function wrap(g, text, x, y, width, lh) {
   const words = text.split(" "); let line = "";

@@ -15,6 +15,7 @@ import pathlib
 import threading
 import time
 import zipfile
+from concurrent.futures import ThreadPoolExecutor
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 from PIL import Image, ImageOps
@@ -146,14 +147,25 @@ def handle_scan(body, address):
     return result
 
 
+def handle_plain(body, address):
+    """What an ordinary app would report: the check-in scanned as shot, no light matching."""
+    image = decode(body.get("image") or "")
+    baseline = body.get("baseline") or {}
+    spend(address, 1)
+    result = scan(image, with_overlays=False)
+    result["verdict"] = sl.verdict(baseline.get("scores", {}), result["scores"])
+    return result
+
+
 def handle_pair(body, address):
     before, after = decode(body.get("before") or ""), decode(body.get("after") or "")
     before_fp, after_fp = sl.fingerprint(before), sl.fingerprint(after)
     light = sl.drift(before_fp, after_fp)
     spend(address, 3)
-    first = scan(before, with_overlays=False)
-    raw = scan(after, with_overlays=False)
-    matched = scan(sl.match_light(after, before_fp), with_overlays=False)
+    with ThreadPoolExecutor(max_workers=3) as pool:     # three independent tasks: run together
+        jobs = [pool.submit(scan, image, False)
+                for image in (before, after, sl.match_light(after, before_fp))]
+        first, raw, matched = [job.result() for job in jobs]
     rows = []
     for concern in sl.CONCERNS:
         claimed = raw["scores"][concern] - first["scores"][concern]
@@ -199,7 +211,7 @@ class Handler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
     def do_POST(self):
-        routes = {"/api/scan": handle_scan, "/api/pair": handle_pair}
+        routes = {"/api/scan": handle_scan, "/api/plain": handle_plain, "/api/pair": handle_pair}
         route = routes.get(self.path)
         if not route:
             return self.send_json(404, {"error": "not_found"})
