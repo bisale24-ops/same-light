@@ -14,7 +14,7 @@ far enough to invent a result. Same Light is the tool that follows from that:
   Light scans both, then scans the "after" again with its light matched to the "before", and shows
   how much of each claimed improvement the light alone accounts for.
 
-**Live: https://same-light.onrender.com** (free instance — the first load after a quiet spell takes up to a minute) · Demo video: _coming_
+**Live: https://same-light.onrender.com** (free instance — the first load after a quiet spell takes up to a minute) · Demo video: https://youtu.be/hvygpxSM6fo
 
 ## What was measured first
 
