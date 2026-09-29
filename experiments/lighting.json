@@ -1,0 +1,222 @@
+{
+ "faceA": [
+  {
+   "frame": "exposure 0.8",
+   "all": 92.25,
+   "skin_age": 29,
+   "wrinkle": 89,
+   "pore": 94,
+   "texture": 90,
+   "acne": 96
+  },
+  {
+   "frame": "exposure 0.9",
+   "all": 91.75,
+   "skin_age": 29,
+   "wrinkle": 86,
+   "pore": 93,
+   "texture": 90,
+   "acne": 98
+  },
+  {
+   "frame": "exposure 1.0",
+   "all": 90.75,
+   "skin_age": 30,
+   "wrinkle": 84,
+   "pore": 92,
+   "texture": 89,
+   "acne": 98
+  },
+  {
+   "frame": "exposure 1.1",
+   "all": 89.75,
+   "skin_age": 30,
+   "wrinkle": 83,
+   "pore": 92,
+   "texture": 88,
+   "acne": 96
+  },
+  {
+   "frame": "exposure 1.2",
+   "all": 90.25,
+   "skin_age": 30,
+   "wrinkle": 82,
+   "pore": 95,
+   "texture": 88,
+   "acne": 96
+  },
+  {
+   "frame": "warm light",
+   "all": 92.5,
+   "skin_age": 31,
+   "wrinkle": 86,
+   "pore": 96,
+   "texture": 92,
+   "acne": 96
+  },
+  {
+   "frame": "cool light",
+   "all": 87.5,
+   "skin_age": 29,
+   "wrinkle": 84,
+   "pore": 85,
+   "texture": 85,
+   "acne": 96
+  }
+ ],
+ "faceB": [
+  {
+   "frame": "exposure 0.8",
+   "error": "error_src_face_too_small: The face in the input image is too small. It needs to take up more than 60% of the image width."
+  },
+  {
+   "frame": "exposure 0.9",
+   "error": "error_src_face_too_small: The face in the input image is too small. It needs to take up more than 60% of the image width."
+  },
+  {
+   "frame": "exposure 1.0",
+   "error": "error_src_face_too_small: The face in the input image is too small. It needs to take up more than 60% of the image width."
+  },
+  {
+   "frame": "exposure 1.1",
+   "error": "error_src_face_too_small: The face in the input image is too small. It needs to take up more than 60% of the image width."
+  },
+  {
+   "frame": "exposure 1.2",
+   "error": "error_src_face_too_small: The face in the input image is too small. It needs to take up more than 60% of the image width."
+  },
+  {
+   "frame": "warm light",
+   "error": "error_src_face_too_small: The face in the input image is too small. It needs to take up more than 60% of the image width."
+  },
+  {
+   "frame": "cool light",
+   "error": "error_src_face_too_small: The face in the input image is too small. It needs to take up more than 60% of the image width."
+  }
+ ],
+ "faceC": [
+  {
+   "frame": "exposure 0.8",
+   "error": "error_lighting_dark: The input image is too dark for accurate analysis."
+  },
+  {
+   "frame": "exposure 0.9",
+   "all": 78.75,
+   "skin_age": 22,
+   "wrinkle": 80,
+   "pore": 72,
+   "texture": 78,
+   "acne": 85
+  },
+  {
+   "frame": "exposure 1.0",
+   "all": 77.75,
+   "skin_age": 21,
+   "wrinkle": 80,
+   "pore": 71,
+   "texture": 78,
+   "acne": 82
+  },
+  {
+   "frame": "exposure 1.1",
+   "all": 78.0,
+   "skin_age": 21,
+   "wrinkle": 80,
+   "pore": 70,
+   "texture": 77,
+   "acne": 85
+  },
+  {
+   "frame": "exposure 1.2",
+   "all": 77.25,
+   "skin_age": 21,
+   "wrinkle": 80,
+   "pore": 71,
+   "texture": 77,
+   "acne": 81
+  },
+  {
+   "frame": "warm light",
+   "all": 78.5,
+   "skin_age": 22,
+   "wrinkle": 81,
+   "pore": 72,
+   "texture": 79,
+   "acne": 82
+  },
+  {
+   "frame": "cool light",
+   "all": 79.5,
+   "skin_age": 21,
+   "wrinkle": 80,
+   "pore": 76,
+   "texture": 77,
+   "acne": 85
+  }
+ ],
+ "faceD": [
+  {
+   "frame": "exposure 0.8",
+   "all": 85.25,
+   "skin_age": 22,
+   "wrinkle": 80,
+   "pore": 78,
+   "texture": 84,
+   "acne": 99
+  },
+  {
+   "frame": "exposure 0.9",
+   "all": 85.25,
+   "skin_age": 22,
+   "wrinkle": 79,
+   "pore": 79,
+   "texture": 84,
+   "acne": 99
+  },
+  {
+   "frame": "exposure 1.0",
+   "all": 85.25,
+   "skin_age": 23,
+   "wrinkle": 79,
+   "pore": 79,
+   "texture": 84,
+   "acne": 99
+  },
+  {
+   "frame": "exposure 1.1",
+   "all": 84.5,
+   "skin_age": 24,
+   "wrinkle": 79,
+   "pore": 79,
+   "texture": 84,
+   "acne": 96
+  },
+  {
+   "frame": "exposure 1.2",
+   "all": 83.75,
+   "skin_age": 25,
+   "wrinkle": 79,
+   "pore": 79,
+   "texture": 84,
+   "acne": 93
+  },
+  {
+   "frame": "warm light",
+   "all": 84.5,
+   "skin_age": 24,
+   "wrinkle": 79,
+   "pore": 80,
+   "texture": 84,
+   "acne": 95
+  },
+  {
+   "frame": "cool light",
+   "all": 84.0,
+   "skin_age": 22,
+   "wrinkle": 79,
+   "pore": 78,
+   "texture": 83,
+   "acne": 96
+  }
+ ]
+}

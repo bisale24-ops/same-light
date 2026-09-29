@@ -1,0 +1,66 @@
+[
+ {
+  "face": "faceA",
+  "frame": "cool light",
+  "raw_gap": {
+   "wrinkle": 0,
+   "pore": -7,
+   "texture": -4,
+   "acne": -2
+  },
+  "matched_gap": {
+   "wrinkle": 0,
+   "pore": 2,
+   "texture": 0,
+   "acne": -2
+  }
+ },
+ {
+  "face": "faceA",
+  "frame": "exposure 0.8",
+  "raw_gap": {
+   "wrinkle": 5,
+   "pore": 2,
+   "texture": 1,
+   "acne": -2
+  },
+  "matched_gap": {
+   "wrinkle": 0,
+   "pore": 1,
+   "texture": 0,
+   "acne": -2
+  }
+ },
+ {
+  "face": "faceD",
+  "frame": "exposure 1.2",
+  "raw_gap": {
+   "wrinkle": 0,
+   "pore": 0,
+   "texture": 0,
+   "acne": -6
+  },
+  "matched_gap": {
+   "wrinkle": 0,
+   "pore": 0,
+   "texture": 0,
+   "acne": -4
+  }
+ },
+ {
+  "face": "faceA",
+  "frame": "warm light",
+  "raw_gap": {
+   "wrinkle": 2,
+   "pore": 4,
+   "texture": 3,
+   "acne": -2
+  },
+  "matched_gap": {
+   "wrinkle": 0,
+   "pore": 0,
+   "texture": 0,
+   "acne": -2
+  }
+ }
+]

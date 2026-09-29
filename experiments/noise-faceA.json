@@ -1,0 +1,110 @@
+{
+ "image": "faceA.jpg",
+ "rows": [
+  {
+   "variant": "same file #1",
+   "all": 90.5,
+   "skin_age": 29,
+   "wrinkle": 84,
+   "wrinkle_raw": 92.169,
+   "pore": 93,
+   "pore_raw": 95.703,
+   "texture": 89,
+   "texture_raw": 92.687,
+   "acne": 96,
+   "acne_raw": 98.058
+  },
+  {
+   "variant": "same file #2",
+   "all": 90.5,
+   "skin_age": 29,
+   "wrinkle": 84,
+   "wrinkle_raw": 92.169,
+   "pore": 93,
+   "pore_raw": 95.703,
+   "texture": 89,
+   "texture_raw": 92.687,
+   "acne": 96,
+   "acne_raw": 98.058
+  },
+  {
+   "variant": "same file #3",
+   "all": 90.5,
+   "skin_age": 29,
+   "wrinkle": 84,
+   "wrinkle_raw": 92.169,
+   "pore": 93,
+   "pore_raw": 95.703,
+   "texture": 89,
+   "texture_raw": 92.687,
+   "acne": 96,
+   "acne_raw": 98.058
+  },
+  {
+   "variant": "brighter +12%",
+   "all": 90.25,
+   "skin_age": 30,
+   "wrinkle": 83,
+   "wrinkle_raw": 91.452,
+   "pore": 94,
+   "pore_raw": 96.235,
+   "texture": 88,
+   "texture_raw": 92.166,
+   "acne": 96,
+   "acne_raw": 98.058
+  },
+  {
+   "variant": "darker -12%",
+   "all": 92.0,
+   "skin_age": 28,
+   "wrinkle": 86,
+   "wrinkle_raw": 93.374,
+   "pore": 94,
+   "pore_raw": 96.192,
+   "texture": 89,
+   "texture_raw": 93.173,
+   "acne": 99,
+   "acne_raw": 100.0
+  },
+  {
+   "variant": "reframed 4%",
+   "all": 90.75,
+   "skin_age": 28,
+   "wrinkle": 85,
+   "wrinkle_raw": 92.482,
+   "pore": 94,
+   "pore_raw": 96.602,
+   "texture": 88,
+   "texture_raw": 92.058,
+   "acne": 96,
+   "acne_raw": 98.058
+  },
+  {
+   "variant": "jpeg q70",
+   "all": 90.75,
+   "skin_age": 29,
+   "wrinkle": 84,
+   "wrinkle_raw": 92.245,
+   "pore": 93,
+   "pore_raw": 95.82,
+   "texture": 90,
+   "texture_raw": 93.377,
+   "acne": 96,
+   "acne_raw": 98.058
+  },
+  {
+   "variant": "smaller 75%",
+   "all": 91.5,
+   "skin_age": 29,
+   "wrinkle": 85,
+   "wrinkle_raw": 92.491,
+   "pore": 94,
+   "pore_raw": 96.291,
+   "texture": 89,
+   "texture_raw": 92.933,
+   "acne": 98,
+   "acne_raw": 99.029
+  }
+ ],
+ "units_spent": 72
+}

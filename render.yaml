@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: same-light
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python server.py
+    envVars:
+      - key: YOUCAM_API_KEY
+        sync: false
+      - key: UNIT_FLOOR
+        value: "150"
