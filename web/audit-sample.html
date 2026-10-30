@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample claim audit: Same Light</title><link rel="stylesheet" href="style.css">
+<style>
+ .page{max-width:980px;margin:0 auto;padding:28px 24px 80px} .page h1{font-size:clamp(30px,4vw,44px);margin:12px 0} .page h2{margin:40px 0 10px}
+ table.m{width:100%;border-collapse:collapse;font-size:14px} table.m th,table.m td{padding:8px 10px;border-bottom:1px solid #ebe8e4;text-align:left;vertical-align:top}
+ table.m th{font-weight:600;color:#44403b} .tri{display:grid;grid-template-columns:repeat(3,1fr);gap:14px} @media(max-width:760px){.tri{grid-template-columns:1fr}}
+ .tri .card{padding:18px} .tri h3{margin:0 0 8px} .tri ul{margin:0;padding-left:18px} .tri li{margin:5px 0;font-size:14px}
+ .wrapx{overflow-x:auto} a.back{display:inline-block;margin-bottom:6px}
+</style></head><body><div class="page"><a class="back" href="index.html">← Same Light</a>
+
+<p class="eyebrow">Sample claim audit · demonstration</p><h1>Before and after: how much did the light do?</h1>
+<p class="lede">What a brand, a retailer or a clinic gets for a before/after photo pair: each claimed change, and how much of it the light alone produces. This one is generated from the recorded sample pair; it is not a real merchant's claim and not a clinical, regulatory or advertising-standards finding.</p>
+<p>The after photo is 24% brighter and warmer than the before photo.</p>
+<div class="card white wrapx"><table class="m"><thead><tr><th>Concern</th><th>Change as shown</th><th>Change in the same light</th><th>Noise band</th><th>Share explained by light</th><th>Verdict</th></tr></thead><tbody><tr><td>Wrinkles</td><td>-3</td><td>+0</td><td>±2</td><td>100%</td><td><strong>explained by light</strong></td></tr><tr><td>Pores</td><td>+2</td><td>+0</td><td>±3</td><td>n/a</td><td><strong>no change</strong></td></tr><tr><td>Texture</td><td>+2</td><td>+0</td><td>±2</td><td>n/a</td><td><strong>no change</strong></td></tr><tr><td>Blemishes</td><td>-2</td><td>+1</td><td>±4</td><td>n/a</td><td><strong>no change</strong></td></tr></tbody></table></div>
+<h2>How to read it</h2>
+<ul><li>Scores are YouCam AI Skin Analysis ui_scores; higher is better.</li>
+<li>The after photo is scanned twice: as it is, and with its light matched to the before photo. The difference is what the light alone produced.</li>
+<li>A change counts only if it exceeds the noise band for that concern, measured on 3 faces (<a href="evidence.html">evidence</a>).</li></ul>
+<h2>What it does not establish</h2>
+<ul><li>That the product caused, or did not cause, any change in skin.</li><li>Anything about different poses, makeup, shadows or cameras.</li><li>Anything outside the light gap measured; beyond it the verdict is withheld.</li></ul>
+<p class="muted">Your own pair: <a href="index.html#pair">Check a before &amp; after</a>, then "Download the claim audit".</p>
+</div></body></html>

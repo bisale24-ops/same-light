@@ -15,6 +15,7 @@
   <nav class="nav">
     <button class="brand" data-go="home"><span class="brand-mark"></span>Same Light</button>
     <div class="nav-links">
+      <a class="btn ghost small" href="evidence.html">Evidence</a>
       <button class="btn ghost small" data-go="pair">Check a before &amp; after</button>
       <button class="btn primary small" data-go="track">Track a routine</button>
     </div>
@@ -26,11 +27,15 @@
       <div>
         <p class="eyebrow">Skin analysis, honestly</p>
         <h1>Did your skincare work — or did the light change?</h1>
-        <p class="lede" style="margin-top:20px">An AI skin scan reads the photo, not your face. Change the bulb and the scores move. Same Light matches every check-in to your first photo's light, then tells you which changes are real.</p>
+        <p class="lede" style="margin-top:20px">An AI skin scan reads the photo, not your face. Change the bulb and the scores move. Same Light matches every check-in to your first photo's light, then tells you which changes beat the light noise.</p>
         <div class="row">
           <button class="btn primary" data-go="track">Track a routine</button>
           <button class="btn" data-go="pair">Check a before &amp; after</button>
         </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn ghost" id="demo-btn">See it work in one click: no photo, no credits</button>
+        </div>
+        <p class="caption" style="margin-top:8px">Recorded real YouCam results on a sample pair. Nothing is scanned and no API units are spent.</p>
       </div>
       <div class="card">
         <div class="bulb">
@@ -53,13 +58,19 @@
       <button class="card path" data-go="track">
         <div class="icon-plate"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.6"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></div>
         <h3>Track a routine</h3>
-        <p class="muted">Baseline photo today, check-ins every week. Each check-in's light is matched to your baseline before it is scored, and each concern gets a plain verdict: real change, within noise, or retake.</p>
+        <p class="muted">Baseline photo today, check-ins every week. Each check-in's light is matched to your baseline before it is scored, and each concern gets a plain verdict: a change that beats the light noise, within noise, or retake.</p>
       </button>
       <button class="card path" data-go="pair">
         <div class="icon-plate"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.6"><rect x="3" y="5" width="8" height="14" rx="2"/><rect x="13" y="5" width="8" height="14" rx="2"/></svg></div>
         <h3>Check a before &amp; after</h3>
         <p class="muted">Two photos from an ad, a clinic post or your own camera roll. See how much of the "improvement" the light alone produces — before you buy.</p>
       </button>
+    </div>
+
+    <div class="card white" style="margin-top:16px">
+      <p class="eyebrow">For brands, retailers and clinics</p>
+      <h3 style="margin:6px 0">Audit a before &amp; after claim</h3>
+      <p class="muted">Upload the two photos behind a claim and get, per concern, how much of the change the light alone produces, with an exportable report. <a href="audit-sample.html">See a sample claim audit</a> (a demonstration built from the recorded sample pair, not a real merchant).</p>
     </div>
 
     <hr class="hairline">
@@ -69,7 +80,7 @@
     <div class="facts">
       <div class="card fact"><div class="num">0</div><p class="muted">points of difference when the identical photo is scanned three times. The YouCam scanner is deterministic.</p></div>
       <div class="card fact"><div class="num">11</div><p class="muted">points on one concern when only the colour temperature changed, warm to cool. Skin age moved up to 3 years with exposure alone.</p></div>
-      <div class="card fact"><div class="num">40 → 13</div><p class="muted">points of fake change left after Same Light matches the light to the baseline — wrinkle and texture drift went to zero.</p></div>
+      <div class="card fact"><div class="num">84 → 33</div><p class="muted">points of fake change across 12 light changes on 3 faces, before and after Same Light matches the light. <a href="evidence.html">All 12 cases, including where it did not help.</a></p></div>
     </div>
     <div class="card white" style="margin-top:16px; overflow-x:auto">
       <table class="measured">
@@ -133,7 +144,7 @@
   <section class="screen" id="pair">
     <p class="eyebrow">Check a before &amp; after</p>
     <h2 style="margin:10px 0 6px">How much of that "after" is the light?</h2>
-    <p class="lede">Add the two photos. Same Light scans both, then scans the after photo again with its light matched to the before photo. What survives the match is real; the rest is lighting.</p>
+    <p class="lede">Add the two photos. Same Light scans both, then scans the after photo again with its light matched to the before photo. What survives the match beats the light noise; the rest is lighting.</p>
     <div class="pair" style="margin-top:28px">
       <div class="drop" id="drop-before"><p><strong>Before</strong> photo</p><p class="caption">tap or drop</p><input type="file" accept="image/*" hidden></div>
       <div class="drop" id="drop-after"><p><strong>After</strong> photo</p><p class="caption">tap or drop</p><input type="file" accept="image/*" hidden></div>

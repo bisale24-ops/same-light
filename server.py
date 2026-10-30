@@ -132,6 +132,13 @@ def handle_scan(body, address):
         light = sl.drift(baseline["fingerprint"], measured)
         result["light"] = light
         result["light_words"] = sl.describe(light)
+        reading = sl.light_reading(baseline["fingerprint"], measured)
+        result["light_reading"] = reading
+        if reading == "unreadable":
+            result["verdict"] = sl.verdict(baseline.get("scores", {}), {}, light)
+            result["retake"] = True
+            result["retake_reason"] = "unreadable"
+            return result
         if not sl.comparable(light):
             result["verdict"] = sl.verdict(baseline.get("scores", {}), {}, light)
             result["retake"] = True
@@ -161,7 +168,10 @@ def handle_pair(body, address):
     before, after = decode(body.get("before") or ""), decode(body.get("after") or "")
     before_fp, after_fp = sl.fingerprint(before), sl.fingerprint(after)
     light = sl.drift(before_fp, after_fp)
-    certain = sl.calibrated(light)
+    if sl.light_reading(before_fp, after_fp) == "unreadable":
+        raise Refused("light_unreadable", "In one of these photos the area used to read the light does not look like "
+                      "skin (hair, a hat or a wall fills it). Use photos where the face fills the frame.", 422)
+    certain = sl.calibrated(light) and sl.light_reading(before_fp, after_fp) == "ok"
     spend(address, 3)
     with ThreadPoolExecutor(max_workers=3) as pool:     # three independent tasks: run together
         jobs = [pool.submit(scan, image, False)
@@ -176,7 +186,7 @@ def handle_pair(body, address):
                      "light_share": sl.light_explains(claimed, real),
                      "real": certain and abs(real) > sl.NOISE_BAND[concern],
                      "uncertain": not certain and abs(real) > sl.NOISE_BAND[concern]})
-    return {"light": light, "calibrated": certain, "light_words": sl.describe(light).replace("your baseline",
+    return {"light": light, "calibrated": certain, "light_reading": sl.light_reading(before_fp, after_fp), "light_words": sl.describe(light).replace("your baseline",
                                                                        "the before photo"),
             "rows": rows, "before": first, "after": raw, "after_same_light": matched}
 

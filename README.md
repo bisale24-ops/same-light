@@ -8,7 +8,7 @@ far enough to invent a result. Same Light is the tool that follows from that:
 
 - **Track a routine.** Take a baseline selfie, then check in weekly. Every check-in's light is
   measured against the baseline and matched to it *before* the YouCam scan. Each concern then
-  gets a plain verdict: *real improvement*, *real decline*, *within noise*, or *retake — the
+  gets a plain verdict: *better beyond light noise*, *worse beyond light noise*, *within noise*, or *retake — the
   light is too different to compare*. At the end you get a shareable proof card.
 - **Check a before & after.** Two photos from an ad, a clinic post or your own camera roll. Same
   Light scans both, then scans the "after" again with its light matched to the "before", and shows
@@ -41,20 +41,15 @@ on every concern ([experiments/noise-faceA.json](experiments/noise-faceA.json)).
 A fourth face (B) was refused by the API as too small in frame, and face C at −20% was refused as
 too dark — both are now handled as capture advice in the app.
 
-**3. Matching the light removes most of it.** The worst cases re-scanned after matching the
-photo's per-channel mean and spread to the baseline
-([experiments/normalise.json](experiments/normalise.json)):
-
-| case | fake change as shot | after matching |
-|---|---|---|
-| A, cooler | pore −7, texture −4, acne −2 | pore +2, texture 0, acne −2 |
-| A, 20% darker | wrinkle +5, pore +2, texture +1, acne −2 | 0, +1, 0, −2 |
-| A, warmer | pore +4, texture +3, wrinkle +2, acne −2 | 0, 0, 0, −2 |
-| D, 20% brighter | acne −6 | acne −4 |
-
-Total fake change: **40 → 13 points**. Wrinkle and texture drift went to zero. What remains sets
-the noise band per concern (`samelight.NOISE_BAND`: wrinkle ±2, pore ±3, texture ±2, acne ±4): a
-change inside the band is reported as noise, never as a result.
+**3. Matching the light removes most of it.** All 12 light changes (3 faces x 4 lights, skin unchanged) scanned as
+shot and after matching ([experiments/RESULTS.md](experiments/RESULTS.md), [raw.json](experiments/raw.json),
+[calibrate.json](experiments/calibrate.json), and the same table on the site at /evidence.html): the total score gap
+falls from **84 to 33 points** (61% less). Seven single readings got slightly worse (all inside their band, mostly
+blemishes) and they are listed. The bands were set from the largest matched gap, so "none outside the band after
+matching" is by construction and is not claimed as a result. An earlier headline, 40 to 13, came from the first
+four cases measured and is superseded by this table. What remains sets the noise band per concern
+(`samelight.NOISE_BAND`: wrinkle ±2, pore ±3, texture ±2, acne ±4): a change inside the band is reported as noise,
+never as a result.
 
 **4. How far matching can be trusted.** A live before/after pair with a large light gap (29%
 brighter and 0.14 warmer — "before" pushed cool, "after" pushed warm) still left pores +6 after

@@ -91,3 +91,26 @@ def test_beyond_the_calibrated_light_gap_nothing_is_certified():
 def test_inside_the_calibrated_gap_a_change_is_certified():
     rows = sl.verdict({"pore": 80}, {"pore": 86}, {"exposure": 0.2, "warmth": 0.06})
     assert rows[0]["call"] == "better"
+
+
+def test_a_wall_is_not_a_readable_light_and_a_face_is():
+    from PIL import Image
+    import samelight as sl
+    wall = Image.new("RGB", (800, 1000), (128, 128, 128))
+    skin = Image.new("RGB", (800, 1000), (224, 172, 140))
+    assert sl.skin_share(wall) == 0 and sl.skin_share(skin) > 0.9
+    assert sl.light_reading(sl.fingerprint(wall)) == "unreadable"
+    assert sl.light_reading(sl.fingerprint(skin), sl.fingerprint(skin)) == "ok"
+    # a fingerprint stored before the skin share existed still works
+    assert sl.light_reading({"mean": [1, 1, 1], "std": [1, 1, 1]}) == "ok"
+
+
+def test_the_four_test_faces_all_read_as_light():
+    import pathlib
+    from PIL import Image
+    import samelight as sl
+    here = pathlib.Path(__file__).resolve().parent.parent / "experiments"
+    for name in ("faceA", "faceB", "faceC", "faceD"):
+        image = Image.open(here / f"{name}.jpg")
+        image.thumbnail((800, 800))
+        assert sl.light_reading(sl.fingerprint(image)) in ("ok", "weak"), name

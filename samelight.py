@@ -36,10 +36,40 @@ def face_region(image):
     return image.crop((width // 4, height // 5, width * 3 // 4, height * 4 // 5))
 
 
+# The light is read from a fixed crop, so a crop that is mostly not skin (hair, a hat, a wall behind a
+# small face) is reading something else. The skin share is a loose check on that, deliberately low: the
+# colour range below was looked at on four faces only and favours lighter skin, so it must not refuse a
+# darker face. Below UNREADABLE nothing in the crop looks like skin at all; below WEAK the reading is
+# shown with a warning.
+SKIN_UNREADABLE = 0.12
+SKIN_WEAK = 0.30
+
+
+def skin_share(image):
+    """Share of the face crop whose colour is in a broad skin range (YCbCr), 0..1."""
+    crop = face_region(image.convert("RGB")).convert("YCbCr")
+    crop.thumbnail((160, 160))
+    data = crop.tobytes()
+    pixels = len(data) // 3
+    hit = sum(1 for i in range(0, pixels * 3, 3)
+              if data[i] > 40 and 77 <= data[i + 1] <= 127 and 133 <= data[i + 2] <= 173)
+    return hit / max(pixels, 1)
+
+
 def fingerprint(image):
     """Per-channel mean and spread of the face region: the light, as the camera saw it."""
     stat = ImageStat.Stat(face_region(image.convert("RGB")))
-    return {"mean": [round(v, 2) for v in stat.mean], "std": [round(v, 2) for v in stat.stddev]}
+    return {"mean": [round(v, 2) for v in stat.mean], "std": [round(v, 2) for v in stat.stddev],
+            "skin": round(skin_share(image), 2)}
+
+
+def light_reading(*fingerprints):
+    """'ok', 'weak' or 'unreadable': can the light be read from these photos? Older fingerprints without
+    a skin share count as ok."""
+    shares = [fp["skin"] for fp in fingerprints if fp.get("skin") is not None]
+    if shares and min(shares) < SKIN_UNREADABLE:
+        return "unreadable"
+    return "weak" if shares and min(shares) < SKIN_WEAK else "ok"
 
 
 def luminance(fp):
