@@ -62,10 +62,12 @@ very dark crops any more. Flat swatches are not faces; this is a diagnostic, not
 2 points or less is shown as *borderline* (it depends on where the band is drawn), not as better or worse. Very dark crops skip the
 skin colour check (the light is read but not verified, and the page says so).
 
-**3d. Real footage.** Frames from 14 free stock clips (one person, one camera, changing light), cut by a fixed rule, YouCam
-deciding what is usable ([real_camera/FOOTAGE.md](real_camera/FOOTAGE.md)): 13 were refused or gave no pair; on the one that
-produced a comparison, a face split by strong blue and orange light, **matching made the total gap larger (24 to 39)**.
-So the claim covers evenly lit photos and does not cover strongly uneven or coloured light.
+**3d. Real footage.** Frames from 18 free stock clips (one person, one camera, changing light), cut by a fixed rule, YouCam
+deciding what is usable ([real_camera/FOOTAGE.md](real_camera/FOOTAGE.md)): 16 were refused or gave no pair; the two that
+produced a comparison do not show matching helping: total gap **24 to 39** on a face split by blue and orange light, and
+**14 to 14** on an evenly lit clip (with one confident "better" after matching on unchanged skin, though expression and
+pose changed too). Matching is shown to help on three faces with software-applied light changes, and not shown to help on
+real footage.
 
 **4. How far matching can be trusted.** A live before/after pair with a large light gap (29%
 brighter and 0.14 warmer — "before" pushed cool, "after" pushed warm) still left pores +6 after

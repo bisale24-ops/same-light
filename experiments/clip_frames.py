@@ -15,6 +15,9 @@ import numpy as np
 from PIL import Image
 
 
+V2 = True
+
+
 def crop_to_face(im):
     w, h = im.size
     ycc = np.asarray(im.resize((max(w // 8, 1), max(h // 8, 1))).convert("YCbCr")).astype(int)
@@ -42,8 +45,17 @@ def crop_to_face(im):
     if not best:
         return im
     ys, xs = [p[0] for p in best], [p[1] for p in best]
-    cy, cx = int(np.median(ys)), int(np.median(xs))
-    side = min(max(int(max(max(ys) - min(ys), max(xs) - min(xs)) * 1.1), 60), min(H, W))
+    if V2:
+        # rule v2: the blob includes neck and shoulders, which made the face too small for YouCam (error_src_face_too_small
+        # on 4 of 4 clips); keep the top 55% of the blob's height, where the face is
+        top, bottom = min(ys), max(ys)
+        face = int((bottom - top) * 0.55)
+        keep = [(a, b) for a, b in best if a <= top + face]
+        cy, cx = top + face // 2, int(np.median([b for _, b in keep]))
+        side = min(max(int(face * 1.15), 60), min(H, W))
+    else:
+        cy, cx = int(np.median(ys)), int(np.median(xs))
+        side = min(max(int(max(max(ys) - min(ys), max(xs) - min(xs)) * 1.1), 60), min(H, W))
     cx, cy = min(max(cx, side // 2), W - side // 2), min(max(cy, side // 2), H - side // 2)
     return im.crop(((cx - side // 2) * 8, (cy - side // 2) * 8, (cx + side // 2) * 8, (cy + side // 2) * 8))
 
