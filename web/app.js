@@ -5,6 +5,7 @@ const CALLS = {
   better: "Better, beyond light noise",
   worse: "Worse, beyond light noise",
   noise: "Within noise",
+  borderline: "Borderline: depends on where the noise band is drawn",
   retake: "Retake — light too different",
   uncertain: "Can't certify — bigger light gap than measured",
 };
@@ -236,6 +237,7 @@ function renderResult(result, isBaseline, extra = {}) {
     parts.push(el("div", { class: "light-card", style: "margin-top:14px" },
       el("div", { class: "swatches" }, swatch(base.fingerprint), el("span", { class: "caption", text: "→" }), swatch(result.fingerprint)),
       el("div", {}, el("strong", { text: "Light: " + result.light_words }), el("p", { class: "caption", style: "margin:4px 0 0", text: result.matched ? "Matched to your baseline before scanning." : "" }))));
+    if (result.light_reading === "unchecked") parts.push(el("p", { class: "caption", style: "margin-top:10px", text: "This photo is very dark, so the check that the light-reading area is skin was not applied. The light was matched all the same; the match is less verified than usual." }));
     if (result.light_reading === "weak") parts.push(el("p", { class: "caption", style: "margin-top:10px", text: "Less than a third of the area used to read the light looks like skin (hair, a shadow or the background is in it), so the light match is less reliable than usual. Retake with your face filling the frame before trusting a change." }));
     parts.push(verdictRows(result.verdict));
     if (!extra.sample && lastCheckin) {
@@ -325,8 +327,8 @@ function proofCard() {
     g.fillStyle = "#000"; g.font = "500 40px Inter, sans-serif"; g.fillText(row.label, 140, y + 12);
     g.font = "400 34px JetBrains Mono, monospace"; g.fillStyle = "#44403b";
     g.fillText(`${row.before} → ${row.after}`, 470, y + 12);
-    const colors = { better: ["#e3f1e8", "#1f7a4d"], worse: ["#f7e2df", "#b3261e"], noise: ["#ebe8e4", "#44403b"], retake: ["#fff1d6", "#7a4b00"], uncertain: ["#fff1d6", "#7a4b00"] }[row.call];
-    const label = { better: "beyond noise", worse: "worse, beyond noise", noise: "noise", retake: "retake", uncertain: "not certified" }[row.call];
+    const colors = { better: ["#e3f1e8", "#1f7a4d"], worse: ["#f7e2df", "#b3261e"], noise: ["#ebe8e4", "#44403b"], borderline: ["#fff1d6", "#7a4b00"], retake: ["#fff1d6", "#7a4b00"], uncertain: ["#fff1d6", "#7a4b00"] }[row.call];
+    const label = { better: "beyond noise", worse: "worse, beyond noise", noise: "noise", borderline: "borderline", retake: "retake", uncertain: "not certified" }[row.call];
     g.font = "500 32px Inter, sans-serif";
     const w = g.measureText(label).width + 48;
     g.fillStyle = colors[0]; roundRect(g, 940 - w, y - 26, w, 56, 28); g.fill();
@@ -462,7 +464,7 @@ function claimAudit(result, sample) {
     "| concern | change as shown | change in the same light | noise band | share of the shown change removed by light matching | verdict |", "|---|---|---|---|---|---|"];
   for (const r of result.rows) {
     const shown = Math.abs(r.claimed) > r.band;
-    const verdict = r.uncertain ? "can't certify (light gap larger than measured)" : r.real ? "beyond light noise" : shown ? "removed by light matching" : "no change";
+    const verdict = r.uncertain ? "can't certify (light gap larger than measured)" : r.borderline ? "borderline (within 2 points of the band)" : r.real ? "beyond light noise" : shown ? "removed by light matching" : "no change";
     lines.push(`| ${r.label} | ${fmt(r.claimed)} | ${fmt(r.same_light)} | ±${r.band} | ${shown ? Math.round((r.light_share || 0) * 100) + "%" : "n/a"} | ${verdict} |`);
   }
   lines.push("", "## How to read it", "- Scores are YouCam AI Skin Analysis ui_scores; higher is better.", "- The after photo is scanned twice: as it is, and with its light matched to the before photo. The share removed by matching = (change as shown − change in the same light) ÷ change as shown. It is an algorithmic comparison of two scans, not a causal finding about the light in the room.", "- A change counts only if it exceeds the noise band for that concern, measured on 3 faces under programmatic light changes (see evidence.html).", "", "## What this does not establish", "- That the product caused or did not cause any change in skin.", "- Anything about photos taken with different poses, makeup, shadows or cameras: the noise bands were not measured on them.", "- Anything outside the light gap measured (exposure ±27%, warmth ±0.08); beyond it the verdict is withheld.");
@@ -494,6 +496,8 @@ function renderPair(result, sample = false) {
       el("div", { class: "scores", text: `as shown ${fmt(r.claimed)} · same light ${fmt(r.same_light)}` }),
       r.uncertain
         ? el("span", { class: "chip uncertain", text: "Can't certify" })
+        : r.borderline
+        ? el("span", { class: "chip uncertain", text: "Borderline" })
         : el("span", { class: "chip " + (r.real ? (r.same_light > 0 ? "better" : "worse") : "noise"), text: r.real ? "Beyond noise" : Math.abs(r.claimed) > r.band ? `${share}% removed by matching` : "No change" }));
   });
   const box = $("#pair-result");

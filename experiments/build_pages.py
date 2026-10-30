@@ -62,7 +62,8 @@ def evidence():
   <li>That a score change smaller than the noise band for its concern is not evidence of anything.</li>
   <li>That the bands measured on a programmatic light change carry over to a real bulb.</li></ul></div>
  <div class="card"><h3>Not validated</h3><ul>
-  <li>Anything on real camera photos, makeup, shadows, a changed pose or a different phone.</li>
+  <li>Out of sample: bands fitted on two faces failed on the third in 8 of 48 held-out readings (see below); a change within 2 points of the band is shown as borderline, not better or worse.</li>
+  <li>Anything on real camera photos, makeup, shadows, a changed pose or a different phone: every light change measured here was applied by software to one photo.</li>
   <li>Whether a score change is a real change in skin: Same Light says a change beats the light noise, not that skincare worked.</li>
   <li>More than 3 faces, and darker skin tones (the 3 faces include one; the skin-colour guard was looked at on four faces only).</li></ul></div>
 </div>

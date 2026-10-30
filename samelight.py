@@ -16,6 +16,11 @@ CONCERNS = ("wrinkle", "pore", "texture", "acne")
 # is not evidence of anything.
 NOISE_BAND = {"wrinkle": 2, "pore": 3, "texture": 2, "acne": 4}
 
+# Leave-one-face-out (experiments/LEAVE_ONE_OUT.md) found 8 of 48 held-out readings outside a band fitted on the other two
+# faces, never by more than 2 points. A change that clears the band by 2 points or less is therefore called borderline: it
+# depends on where the band is drawn, so it is not reported as better or worse.
+BORDERLINE_MARGIN = 2
+
 # Beyond this the matching itself is a guess: the light is too different to compare at all.
 MAX_EXPOSURE_DRIFT = 0.35
 MAX_WARMTH_DRIFT = 0.25
@@ -76,7 +81,10 @@ def light_reading(*fingerprints):
     shares = [fp["skin"] for fp in fingerprints if fp.get("skin") is not None]
     if shares and min(shares) < SKIN_UNREADABLE:
         return "unreadable"
-    return "weak" if shares and min(shares) < SKIN_WEAK else "ok"
+    if shares and min(shares) < SKIN_WEAK:
+        return "weak"
+    # a very dark crop skips the colour test: the light is read, but not checked
+    return "unchecked" if any("skin" in fp and fp["skin"] is None for fp in fingerprints) else "ok"
 
 
 def luminance(fp):
@@ -145,8 +153,13 @@ def verdict(baseline_scores, current_scores, light=None):
             continue
         delta = after - before
         band = NOISE_BAND[concern]
-        call = "better" if delta > band else "worse" if delta < -band else "noise"
-        if call != "noise" and not certain:
+        if abs(delta) <= band:
+            call = "noise"
+        elif abs(delta) <= band + BORDERLINE_MARGIN:
+            call = "borderline"
+        else:
+            call = "better" if delta > 0 else "worse"
+        if call in ("better", "worse", "borderline") and not certain:
             call = "uncertain"
         rows.append({"concern": concern, "label": LABELS[concern], "before": before, "after": after,
                      "delta": delta, "band": band, "call": call})

@@ -61,9 +61,16 @@ def test_change_inside_the_band_is_noise():
 
 def test_change_beyond_the_band_counts_both_ways():
     rows = sl.verdict({"wrinkle": 80, "pore": 80, "texture": 80, "acne": 80},
-                      {"wrinkle": 83, "pore": 76, "texture": 80, "acne": 85})
+                      {"wrinkle": 85, "pore": 72, "texture": 80, "acne": 90})
     calls = {r["concern"]: r["call"] for r in rows}
     assert calls == {"wrinkle": "better", "pore": "worse", "texture": "noise", "acne": "better"}
+
+
+def test_a_change_that_clears_the_band_by_two_points_or_less_is_borderline():
+    rows = sl.verdict({"wrinkle": 80, "pore": 80, "texture": 80, "acne": 80},
+                      {"wrinkle": 83, "pore": 76, "texture": 82, "acne": 85})   # +3 vs 2, -4 vs 3, +2 vs 2, +5 vs 4
+    calls = {r["concern"]: r["call"] for r in rows}
+    assert calls == {"wrinkle": "borderline", "pore": "borderline", "texture": "noise", "acne": "borderline"}
 
 
 def test_light_too_different_means_retake_not_a_verdict():
@@ -101,6 +108,8 @@ def test_a_wall_is_not_a_readable_light_and_a_face_is():
     assert sl.skin_share(wall) == 0 and sl.skin_share(skin) > 0.9
     assert sl.light_reading(sl.fingerprint(wall)) == "unreadable"
     assert sl.light_reading(sl.fingerprint(skin), sl.fingerprint(skin)) == "ok"
+    dark = Image.new("RGB", (800, 1000), (41, 36, 32))
+    assert sl.light_reading(sl.fingerprint(dark)) == "unchecked"       # read, not verified: never refused
     # a fingerprint stored before the skin share existed still works
     assert sl.light_reading({"mean": [1, 1, 1], "std": [1, 1, 1]}) == "ok"
 
@@ -113,7 +122,7 @@ def test_the_four_test_faces_all_read_as_light():
     for name in ("faceA", "faceB", "faceC", "faceD"):
         image = Image.open(here / f"{name}.jpg")
         image.thumbnail((800, 800))
-        assert sl.light_reading(sl.fingerprint(image)) in ("ok", "weak"), name
+        assert sl.light_reading(sl.fingerprint(image)) in ("ok", "weak", "unchecked"), name
 
 
 def test_no_monk_skin_tone_swatch_is_refused_as_unreadable():
@@ -122,4 +131,4 @@ def test_no_monk_skin_tone_swatch_is_refused_as_unreadable():
     for hexcolor in ["#f6ede4", "#f3e7db", "#f7ead0", "#eadaba", "#d7bd96", "#a07e56", "#825c43", "#604134", "#3a312a", "#292420"]:
         colour = tuple(int(hexcolor[i:i + 2], 16) for i in (1, 3, 5))
         reading = sl.light_reading(sl.fingerprint(Image.new("RGB", (400, 500), colour)))
-        assert reading == "ok", hexcolor
+        assert reading in ("ok", "unchecked"), hexcolor

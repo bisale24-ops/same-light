@@ -58,6 +58,10 @@ the light-reading crop looks like skin) was checked on all ten Monk Skin Tone sw
 ([experiments/SKIN_GUARD_CHECK.md](experiments/SKIN_GUARD_CHECK.md)): it refused the darkest tone, so it is not applied to
 very dark crops any more. Flat swatches are not faces; this is a diagnostic, not a fairness validation.
 
+**3c. Borderline.** Because bands fitted on two faces missed on the third by up to 2 points, a change that clears its band by
+2 points or less is shown as *borderline* (it depends on where the band is drawn), not as better or worse. Very dark crops skip the
+skin colour check (the light is read but not verified, and the page says so).
+
 **4. How far matching can be trusted.** A live before/after pair with a large light gap (29%
 brighter and 0.14 warmer — "before" pushed cool, "after" pushed warm) still left pores +6 after
 matching: twice the band, on skin that had not changed. So the residual was measured across

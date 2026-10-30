@@ -171,7 +171,7 @@ def handle_pair(body, address):
     if sl.light_reading(before_fp, after_fp) == "unreadable":
         raise Refused("light_unreadable", "In one of these photos the area used to read the light does not look like "
                       "skin (hair, a hat or a wall fills it). Use photos where the face fills the frame.", 422)
-    certain = sl.calibrated(light) and sl.light_reading(before_fp, after_fp) == "ok"
+    certain = sl.calibrated(light) and sl.light_reading(before_fp, after_fp) in ("ok", "unchecked")
     spend(address, 3)
     with ThreadPoolExecutor(max_workers=3) as pool:     # three independent tasks: run together
         jobs = [pool.submit(scan, image, False)
@@ -184,7 +184,8 @@ def handle_pair(body, address):
         rows.append({"concern": concern, "label": sl.LABELS[concern], "claimed": claimed,
                      "same_light": real, "band": sl.NOISE_BAND[concern],
                      "light_share": sl.light_explains(claimed, real),
-                     "real": certain and abs(real) > sl.NOISE_BAND[concern],
+                     "real": certain and abs(real) > sl.NOISE_BAND[concern] + sl.BORDERLINE_MARGIN,
+                     "borderline": certain and sl.NOISE_BAND[concern] < abs(real) <= sl.NOISE_BAND[concern] + sl.BORDERLINE_MARGIN,
                      "uncertain": not certain and abs(real) > sl.NOISE_BAND[concern]})
     return {"light": light, "calibrated": certain, "light_reading": sl.light_reading(before_fp, after_fp), "light_words": sl.describe(light).replace("your baseline",
                                                                        "the before photo"),
