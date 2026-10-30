@@ -27,7 +27,7 @@
       <div>
         <p class="eyebrow">Skin analysis, honestly</p>
         <h1>Did your skincare work — or did the light change?</h1>
-        <p class="lede" style="margin-top:20px">An AI skin scan reads the photo, not your face. Change the bulb and the scores move. Same Light matches every check-in to your first photo's light, then tells you which changes beat the light noise.</p>
+        <p class="lede" style="margin-top:20px">An AI skin scan reads the photo, not your face. Change the bulb and the scores move, on skin that did not change at all. Same Light measures how far the light alone moves a score, and says so when a change can't be trusted.</p>
         <div class="row">
           <button class="btn primary" data-go="track">Track a routine</button>
           <button class="btn" data-go="pair">Check a before &amp; after</button>
@@ -80,7 +80,7 @@
     <div class="facts">
       <div class="card fact"><div class="num">0</div><p class="muted">points of difference when the identical photo is scanned three times. The YouCam scanner is deterministic.</p></div>
       <div class="card fact"><div class="num">11</div><p class="muted">points on one concern when only the colour temperature changed, warm to cool. Skin age moved up to 3 years with exposure alone.</p></div>
-      <div class="card fact"><div class="num">84 → 33</div><p class="muted">points of fake change across 12 light changes on 3 faces, before and after Same Light matches the light. <a href="evidence.html">All 12 cases, including where it did not help.</a></p></div>
+      <div class="card fact"><div class="num">84 → 33</div><p class="muted">points of fake change across 12 software-applied light changes on 3 faces, before and after matching the light. On two real video clips matching did not help (24 to 39, 14 to 14), which is why Same Light says "borderline" or "can't certify" instead of promising a fix. <a href="evidence.html">All of it.</a></p></div>
     </div>
     <div class="card white" style="margin-top:16px; overflow-x:auto">
       <table class="measured">
@@ -144,7 +144,7 @@
   <section class="screen" id="pair">
     <p class="eyebrow">Check a before &amp; after</p>
     <h2 style="margin:10px 0 6px">How much of that "after" is the light?</h2>
-    <p class="lede">Add the two photos. Same Light scans both, then scans the after photo again with its light matched to the before photo. What survives the match beats the light noise; the rest is lighting.</p>
+    <p class="lede">Add the two photos. Same Light scans both, then scans the after photo again with its light matched to the before photo. A change that survives beats the light noise; a change that disappears was the light. Where the light gap is too big, or the result is close to the noise, it says so instead of choosing.</p>
     <div class="pair" style="margin-top:28px">
       <div class="drop" id="drop-before"><p><strong>Before</strong> photo</p><p class="caption">tap or drop</p><input type="file" accept="image/*" hidden></div>
       <div class="drop" id="drop-after"><p><strong>After</strong> photo</p><p class="caption">tap or drop</p><input type="file" accept="image/*" hidden></div>

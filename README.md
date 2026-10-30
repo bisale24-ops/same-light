@@ -4,7 +4,9 @@
 
 AI skin analysis reads the photo, not the face. Before building anything, this project measured
 how far YouCam's AI Skin Analysis scores move when the skin does not change at all. The answer is
-far enough to invent a result. Same Light is the tool that follows from that:
+far enough to invent a result. Same Light is the tool that follows from that: it measures how much the light alone moves
+a score, matches the light where that helps, and says *borderline*, *can't certify* or *retake* where it does not.
+It is a caution, not a cure: on two real video clips matching did not help (see 3d below).
 
 - **Track a routine.** Take a baseline selfie, then check in weekly. Every check-in's light is
   measured against the baseline and matched to it *before* the YouCam scan. Each concern then
