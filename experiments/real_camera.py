@@ -39,19 +39,33 @@ def jpeg(image):
 
 
 def scan(image):
+    """Scores, or the API's refusal as a string (a refusal is a result, not a reason to drop the photo)."""
     import youcam
-    scores, _ = youcam.analyse(sl.CONCERNS, file_id=youcam.upload(jpeg(image)), forget=True)
+    try:
+        scores, _ = youcam.analyse(sl.CONCERNS, file_id=youcam.upload(jpeg(image)), forget=True)
+    except RuntimeError as error:
+        return str(error).split(":", 1)[0]
     return {c: scores[c]["ui_score"] for c in sl.CONCERNS}
+
+
+MIN_BALANCE = 195        # a clip can cost 45 units; keep 150 for the live demo
 
 
 def run(folder, scanning):
     folder = pathlib.Path(folder)
+    if scanning:
+        import youcam
+        if youcam.balance() < MIN_BALANCE:
+            return [f"## {folder.name}", "", "Not scanned: stopped to keep the live demo's reserve of YouCam units.", ""]
     images = {n: load(next(folder.glob(n + ".*"))) for n in NAMES}
     base_fp = sl.fingerprint(images["baseline"])
     out = [f"## {folder.name}", "", f"Baseline light reading: {sl.light_reading(base_fp)}.", "",
            "| light | drift from baseline | reading | comparable | calibrated | scores as shot (wr/po/tx/ac) | gap as shot | gap matched | total gap as shot -> matched | verdict as shot | verdict matched |",
            "|---|---|---|---|---|---|---|---|---|---|---|"]
     base_scores = scan(images["baseline"]) if scanning else None
+    if isinstance(base_scores, str):
+        out.append(f"| baseline | refused by YouCam: {base_scores} | | | | | | | | | |")
+        return out
     for name in NAMES[1:]:
         fp = sl.fingerprint(images[name])
         light = sl.drift(base_fp, fp)
@@ -59,6 +73,9 @@ def run(folder, scanning):
         if scanning and sl.comparable(light):
             shot = scan(images[name])
             matched = scan(sl.match_light(images[name], base_fp))
+            if isinstance(shot, str) or isinstance(matched, str):
+                out.append("| " + " | ".join(row + [f"refused by YouCam: as shot {shot if isinstance(shot, str) else 'ok'}, matched {matched if isinstance(matched, str) else 'ok'}"] + [""] * 5) + " |")
+                continue
             gs = {c: shot[c] - base_scores[c] for c in sl.CONCERNS}
             gm = {c: matched[c] - base_scores[c] for c in sl.CONCERNS}
             f = lambda d: "/".join(f"{d[c]:+d}" for c in sl.CONCERNS)
@@ -77,8 +94,10 @@ def main(args):
     scanning = "--no-scan" not in args
     folders = [a for a in args if not a.startswith("--")]
     lines = ["# Real-camera feasibility test", "",
-             "One person, one phone, real lights, skin unchanged. Every photo is listed; none was dropped or retaken. "
-             "A feasibility test on one person, not a validation: it says nothing about other skin, cameras or rooms.", ""]
+             "Frames of real footage: the same person and the same camera within one clip, light changing as they move in sunlight "
+             "(free stock clips, Pexels licence; frames at 10%, 50% and 90% of each clip, fixed in advance; none dropped or replaced). "
+             "The skin is the same, but pose and expression change between frames, which also moves scores, so this is a feasibility "
+             "test on three clips, not a validation: it says nothing about other skin, cameras or rooms.", ""]
     for folder in folders:
         lines += run(folder, scanning) + [""]
     (ROOT / "real_camera").mkdir(exist_ok=True)

@@ -63,7 +63,7 @@ def evidence():
   <li>That the bands measured on a programmatic light change carry over to a real bulb.</li></ul></div>
  <div class="card"><h3>Not validated</h3><ul>
   <li>Out of sample: bands fitted on two faces failed on the third in 8 of 48 held-out readings (see below); a change within 2 points of the band is shown as borderline, not better or worse.</li>
-  <li>Anything on real camera photos, makeup, shadows, a changed pose or a different phone: every light change measured here was applied by software to one photo.</li>
+  <li>Real camera light: every controlled measurement here was applied by software to one photo. On real footage one clip could be compared, and there matching made things worse (see below).</li>
   <li>Whether a score change is a real change in skin: Same Light says a change beats the light noise, not that skincare worked.</li>
   <li>More than 3 faces, and darker skin tones (the 3 faces include one; the skin-colour guard was looked at on four faces only).</li></ul></div>
 </div>
@@ -78,6 +78,9 @@ def evidence():
 <p class="muted">The shipped noise bands were fitted on these same faces, so they are in-sample. Fitting the band for each concern on two faces and scoring the third:</p>
 <div class="card white wrapx">{loo}</div>
 <p class="muted">So a band fitted on two faces does not always hold on the third: 8 of 48 held-out matched readings fell outside (acne on face D by 1 point, wrinkle and pore on face A by up to 2). With three faces the bands are a rough guide. <a href="{GITHUB}experiments/LEAVE_ONE_OUT.md">Method and table</a>.</p>
+
+<h2>On real camera footage</h2>
+<p class="muted">Frames from 14 free stock clips (one person, one camera, light changing), cut by a fixed rule, with YouCam deciding what was usable. Only one clip produced a comparison: <strong>there, matching made the total gap larger (24 to 39)</strong>, on a face split by strong blue and orange light that one average cannot match. Thirteen clips were refused outright (angle, face size, out of frame) or gave no second frame. So: one clip, not a validation, and the claim does not cover strongly uneven or coloured light. <a href="{GITHUB}real_camera/FOOTAGE.md">Every clip, every refusal, and the guard I tried and did not ship</a>.</p>
 
 <h2>Where matching did not help</h2>
 <p class="muted">Readings where the matched gap is larger than the gap as shot (all inside their band; mostly blemishes, which jitter by about 2 on identical re-encoded photos):</p>
