@@ -33,6 +33,11 @@
 <p style="margin-top:14px"><strong>Totals:</strong> 84 points of gap as shot, 33 after matching (61% less). 10 of 48 readings were outside their band as shot.</p>
 <p class="muted">The bands were set from the largest matched gaps, so "0 outside the band after matching" is true by construction and is not offered as a result. The fair comparison is the totals.</p>
 
+<h2>Out of sample: leave one face out</h2>
+<p class="muted">The shipped noise bands were fitted on these same faces, so they are in-sample. Fitting the band for each concern on two faces and scoring the third:</p>
+<div class="card white wrapx"><table class="m"><thead><tr><th>held-out face</th><th>band (wr/po/tx/ac)</th><th>matched readings outside the band</th><th>worst miss</th><th>readings as shot outside the band</th></tr></thead><tbody><tr><td>A</td><td>0/1/1/3</td><td>4 of 16 (0.85 warm wrinkle +1, 1.2 cool pore +3, 1.25 warm wrinkle +2, 1.25 warm pore +2)</td><td>2</td><td>10</td></tr><tr><td>C</td><td>2/3/1/3</td><td>0 of 16</td><td>0</td><td>2</td></tr><tr><td>D</td><td>2/3/1/2</td><td>4 of 16 (0.85 warm acne -3, 1.2 cool acne -3, 1.25 warm acne -3, 0.8 cool acne -3)</td><td>1</td><td>2</td></tr></tbody></table></div>
+<p class="muted">So a band fitted on two faces does not always hold on the third: 8 of 48 held-out matched readings fell outside (acne on face D by 1 point, wrinkle and pore on face A by up to 2). With three faces the bands are a rough guide. <a href="https://github.com/bisale24-ops/same-light/blob/main/experiments/LEAVE_ONE_OUT.md">Method and table</a>.</p>
+
 <h2>Where matching did not help</h2>
 <p class="muted">Readings where the matched gap is larger than the gap as shot (all inside their band; mostly blemishes, which jitter by about 2 on identical re-encoded photos):</p>
 <ul><li>Face A, 1.2 cool, blemishes: +1 as shot, -2 after matching</li><li>Face A, 1.25 warm, wrinkles: -1 as shot, +2 after matching</li><li>Face A, 0.8 cool, blemishes: +0 as shot, +1 after matching</li><li>Face C, 1.25 warm, texture: +0 as shot, -1 after matching</li><li>Face C, 1.25 warm, blemishes: -1 as shot, +2 after matching</li><li>Face D, 0.85 warm, blemishes: +0 as shot, -3 after matching</li><li>Face D, 0.8 cool, blemishes: +0 as shot, -3 after matching</li></ul>
@@ -40,7 +45,7 @@
 <h2>How the light is read, and when Same Light refuses</h2>
 <ul>
  <li>The light is read from a fixed crop of the middle of the frame (the middle 50% by 60%). Hair, makeup, shadows and a changed pose can contaminate it.</li>
- <li>If almost nothing in that crop looks like skin, no verdict is given and the photo is rejected as unreadable. If under a third looks like skin, the result carries a warning. The skin test is deliberately loose because it favours lighter skin tones and must not refuse a darker face.</li>
+ <li>If almost nothing in that crop looks like skin, no verdict is given and the photo is rejected as unreadable. If under a third looks like skin, the result carries a warning. The colour test is loose on purpose and is not applied to very dark crops, where it cannot tell skin from dark hair: <a href="https://github.com/bisale24-ops/same-light/blob/main/experiments/SKIN_GUARD_CHECK.md">a check on all ten Monk Skin Tone swatches</a> found it refused the darkest tone before that fix, and none now. Flat swatches are not faces, so this is a diagnostic, not a fairness validation.</li>
  <li>A light gap beyond the measured range (exposure ±27%, warmth ±0.08) is shown with how much the light explains and marked "can't certify". Beyond 35% / 0.25 it asks for a retake.</li>
 </ul>
 

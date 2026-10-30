@@ -114,3 +114,12 @@ def test_the_four_test_faces_all_read_as_light():
         image = Image.open(here / f"{name}.jpg")
         image.thumbnail((800, 800))
         assert sl.light_reading(sl.fingerprint(image)) in ("ok", "weak"), name
+
+
+def test_no_monk_skin_tone_swatch_is_refused_as_unreadable():
+    from PIL import Image
+    import samelight as sl
+    for hexcolor in ["#f6ede4", "#f3e7db", "#f7ead0", "#eadaba", "#d7bd96", "#a07e56", "#825c43", "#604134", "#3a312a", "#292420"]:
+        colour = tuple(int(hexcolor[i:i + 2], 16) for i in (1, 3, 5))
+        reading = sl.light_reading(sl.fingerprint(Image.new("RGB", (400, 500), colour)))
+        assert reading == "ok", hexcolor

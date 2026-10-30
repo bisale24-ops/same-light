@@ -44,6 +44,9 @@ def evidence():
         worse += [(c["face"], c["light"], x, r[x], m[x]) for x in C if abs(m[x]) > abs(r[x])]
         rows.append(f"<tr><td>{e(c['face'][-1])}</td><td>{e(c['light'])}</td><td>{c['gap']['exposure']:+.2f} / {c['gap']['warmth']:+.2f}</td>"
                     f"<td>{fmt(r)}</td><td>{fmt(m)}</td><td>{sr} → {sm}</td></tr>")
+    loo_lines = [l for l in (HERE / "LEAVE_ONE_OUT.md").read_text().split("\n") if l.startswith("|")]
+    loo = "<table class=\"m\"><thead><tr>" + "".join(f"<th>{e(c.strip())}</th>" for c in loo_lines[0].strip("|").split("|")) + "</tr></thead><tbody>" + "".join(
+        "<tr>" + "".join(f"<td>{e(c.strip())}</td>" for c in l.strip("|").split("|")) + "</tr>" for l in loo_lines[2:]) + "</tbody></table>"
     worse_li = "".join(f"<li>Face {e(f[-1])}, {e(l)}, {LABEL[x].lower()}: {a:+d} as shot, {b:+d} after matching</li>" for f, l, x, a, b in worse)
     return HEAD.format(title="Evidence: Same Light") + f"""
 <p class="eyebrow">Evidence</p><h1>What we measured, and what we did not.</h1>
@@ -70,6 +73,11 @@ def evidence():
 <p style="margin-top:14px"><strong>Totals:</strong> {tr} points of gap as shot, {tm} after matching ({round((1-tm/tr)*100)}% less). {orr} of 48 readings were outside their band as shot.</p>
 <p class="muted">The bands were set from the largest matched gaps, so "0 outside the band after matching" is true by construction and is not offered as a result. The fair comparison is the totals.</p>
 
+<h2>Out of sample: leave one face out</h2>
+<p class="muted">The shipped noise bands were fitted on these same faces, so they are in-sample. Fitting the band for each concern on two faces and scoring the third:</p>
+<div class="card white wrapx">{loo}</div>
+<p class="muted">So a band fitted on two faces does not always hold on the third: 8 of 48 held-out matched readings fell outside (acne on face D by 1 point, wrinkle and pore on face A by up to 2). With three faces the bands are a rough guide. <a href="{GITHUB}experiments/LEAVE_ONE_OUT.md">Method and table</a>.</p>
+
 <h2>Where matching did not help</h2>
 <p class="muted">Readings where the matched gap is larger than the gap as shot (all inside their band; mostly blemishes, which jitter by about 2 on identical re-encoded photos):</p>
 <ul>{worse_li}</ul>
@@ -77,7 +85,7 @@ def evidence():
 <h2>How the light is read, and when Same Light refuses</h2>
 <ul>
  <li>The light is read from a fixed crop of the middle of the frame (the middle 50% by 60%). Hair, makeup, shadows and a changed pose can contaminate it.</li>
- <li>If almost nothing in that crop looks like skin, no verdict is given and the photo is rejected as unreadable. If under a third looks like skin, the result carries a warning. The skin test is deliberately loose because it favours lighter skin tones and must not refuse a darker face.</li>
+ <li>If almost nothing in that crop looks like skin, no verdict is given and the photo is rejected as unreadable. If under a third looks like skin, the result carries a warning. The colour test is loose on purpose and is not applied to very dark crops, where it cannot tell skin from dark hair: <a href="{GITHUB}experiments/SKIN_GUARD_CHECK.md">a check on all ten Monk Skin Tone swatches</a> found it refused the darkest tone before that fix, and none now. Flat swatches are not faces, so this is a diagnostic, not a fairness validation.</li>
  <li>A light gap beyond the measured range (exposure ±27%, warmth ±0.08) is shown with how much the light explains and marked "can't certify". Beyond 35% / 0.25 it asks for a retake.</li>
 </ul>
 
@@ -96,14 +104,14 @@ def audit():
     rows = []
     for r in s["rows"]:
         shown = abs(r["claimed"]) > r["band"]
-        verdict = "can't certify" if r.get("uncertain") else "beyond light noise" if r["real"] else "explained by light" if shown else "no change"
+        verdict = "can't certify" if r.get("uncertain") else "beyond light noise" if r["real"] else "removed by light matching" if shown else "no change"
         share = f"{round((r['light_share'] or 0) * 100)}%" if shown else "n/a"
         rows.append(f"<tr><td>{e(r['label'])}</td><td>{r['claimed']:+d}</td><td>{r['same_light']:+d}</td><td>±{r['band']}</td><td>{share}</td><td><strong>{verdict}</strong></td></tr>")
     return HEAD.format(title="Sample claim audit: Same Light") + f"""
 <p class="eyebrow">Sample claim audit · demonstration</p><h1>Before and after: how much did the light do?</h1>
 <p class="lede">What a brand, a retailer or a clinic gets for a before/after photo pair: each claimed change, and how much of it the light alone produces. This one is generated from the recorded sample pair; it is not a real merchant's claim and not a clinical, regulatory or advertising-standards finding.</p>
 <p>The after photo is {e(s['light_words'])}.</p>
-<div class="card white wrapx"><table class="m"><thead><tr><th>Concern</th><th>Change as shown</th><th>Change in the same light</th><th>Noise band</th><th>Share explained by light</th><th>Verdict</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
+<div class="card white wrapx"><table class="m"><thead><tr><th>Concern</th><th>Change as shown</th><th>Change in the same light</th><th>Noise band</th><th>Share removed by light matching</th><th>Verdict</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
 <h2>How to read it</h2>
 <ul><li>Scores are YouCam AI Skin Analysis ui_scores; higher is better.</li>
 <li>The after photo is scanned twice: as it is, and with its light matched to the before photo. The difference is what the light alone produced.</li>

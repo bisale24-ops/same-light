@@ -51,6 +51,13 @@ four cases measured and is superseded by this table. What remains sets the noise
 (`samelight.NOISE_BAND`: wrinkle ±2, pore ±3, texture ±2, acne ±4): a change inside the band is reported as noise,
 never as a result.
 
+**3b. Out of sample, and who the guard might refuse.** Fitting each noise band on two faces and scoring the third
+([experiments/LEAVE_ONE_OUT.md](experiments/LEAVE_ONE_OUT.md)): 8 of 48 held-out matched readings fall outside, so the
+bands are a rough guide on three faces. The crop-skin guard (a loose colour test that rejects a photo when nothing in
+the light-reading crop looks like skin) was checked on all ten Monk Skin Tone swatches
+([experiments/SKIN_GUARD_CHECK.md](experiments/SKIN_GUARD_CHECK.md)): it refused the darkest tone, so it is not applied to
+very dark crops any more. Flat swatches are not faces; this is a diagnostic, not a fairness validation.
+
 **4. How far matching can be trusted.** A live before/after pair with a large light gap (29%
 brighter and 0.14 warmer — "before" pushed cool, "after" pushed warm) still left pores +6 after
 matching: twice the band, on skin that had not changed. So the residual was measured across
